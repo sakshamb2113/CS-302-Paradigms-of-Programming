@@ -1,0 +1,65 @@
+#lang sicp
+(define-syntax delay
+  (syntax-rules ()
+    ((delay expr) (lambda () expr))))
+
+(define-syntax cons-stream
+  (syntax-rules ()
+    ((cons-stream a b) (cons a (delay b)))))
+
+(define (stream-car s)
+  (car s))
+
+(define (force promise) (promise))
+
+(define (stream-cdr s) (force (cdr s)))
+
+(define the-empty-stream '())
+
+(define (stream-null? s) (eq? s the-empty-stream))
+
+(define (stream-map proc s)
+  (if (stream-null? s)
+      the-empty-stream
+      (cons-stream (proc (stream-car s))
+                         (stream-map proc (stream-cdr s)))))
+
+(define (stream-filter pred s)
+  (cond ((stream-null? s) the-empty-stream)
+        ((pred (stream-car s))
+         (cons-stream (stream-car s)
+                      (stream-filter pred (stream-cdr s))))
+        (else (stream-filter pred (stream-cdr s)))))
+
+(define (stream-enumerate-interval low high)
+  (if (> low high)
+      the-empty-stream
+      (cons-stream low
+                   (stream-enumerate-interval (+ low 1) high))))
+
+(define (enumerate-interval low high)
+  (if (> low high)
+    nil
+    (cons low (enumerate-interval (+ low 1) high))))
+
+(define (map f l)
+  (if (null? l)
+    nil
+    (cons (f (car l))
+          (map f (cdr l)))))
+
+(define (filter pred l)
+  (cond ((null? l) nil)
+        ((pred (car l)) (cons (car l) (filter pred (cdr l))))
+        (else (filter pred (cdr l)))))
+
+(define (accumulate op v l)
+  (if (null? l)
+    v
+    (op (car l)
+        (accumulate op v (cdr l)))))
+
+(stream-car (stream-cdr
+              (stream-filter
+                prime?
+                  (stream-enumerate-interval 10000 1000000))))

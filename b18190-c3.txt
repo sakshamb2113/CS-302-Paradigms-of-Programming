@@ -1,0 +1,28 @@
+Lambda the Ultimate
+=========================
+
+
+History
+========
+It is a recurring phrase used in a lot of papers. This was first used by Sussman and Steele in the 70s, 
+who demonstrated the use of lambda calculus in their papers. They also devised scheme, a dialect of lisp
+we use in this course to learn more about functional programming.
+
+What is "Lambda the Ultimate"?
+===============================
+This is a slogan which signifies the fact that lambdas can be used to implement everything in other
+ languages. The lambda is universal and lambda based expressions are efficient to use and seem more natural.
+
+
+Some of the instances of its use
+==================================
+As a result, this catchy phrase or slogan is used by many blogs, papers, books and even courses that deal 
+with programming languages. One of the links claims lambda as the ultimate worksheet function and talks
+ about the introduction of lambda in Microsoft Excel.
+
+Lambda-the ultimate imperative is the name of a report by MIT describing how to model the
+ different programming in terms of lambda expressions. A popular blog which posts about various developments
+going on in programming languages also uses this slogan as its name. One of the papers describes lambda as
+ the ultimate label which can be used for optimizing compilers in scheme.
+
+

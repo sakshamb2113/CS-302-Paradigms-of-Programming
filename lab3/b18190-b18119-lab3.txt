@@ -1,0 +1,60 @@
+#lang sicp
+;;q1
+(define (make-account balance password)
+  (lambda(pass mess)
+    (if (eq? pass password)
+    (cond((eq? mess 'withdraw)
+          (lambda(amount)
+            (if  (>= balance amount)
+                 (begin (set! balance (- balance amount)) balance)
+                 "Insufficient Balance!")))
+         ((eq? mess 'deposit)
+         (lambda(amount)
+           (set! balance (+ balance amount)) balance))
+          (else (error "Invalid Request"  
+                       ))) 
+    (error "Invalid pass"  
+                       ))))
+
+(define acc2 (make-account 100 'secret-password))
+
+;;q2
+(define (call-the-cops)
+    (error "you have exhausted your attempts"))
+(define (acc1 balance password wrong)
+  (lambda(pass mess)
+    (if (eq? pass password)
+    (cond((eq? mess 'withdraw)
+          (lambda(amount)
+            (if  (>= balance amount)
+                 (begin (set! balance (- balance amount)) balance)
+                 "Insufficient Balance!")))
+         ((eq? mess 'deposit)
+         (lambda(amount)
+           (set! balance (+ balance amount)) balance))
+          (else (error "Invalid Request"  
+                       ))) 
+    (begin (set! wrong (+ wrong 1))
+           (if(>= wrong 5)
+                 (call-the-cops)
+                (error "Invalid pass")  
+                 )))))
+(define (make-account balance password)
+  (acc1 balance password 0))
+
+(define acc2 (make-account 100 'secret-password))
+
+;;q3
+(define (make-monitored f)
+  (define counter 0)
+  (define (mf flag)
+    (cond
+      ((equal? flag 'how-many-calls?) counter)
+      ((equal? flag 'reset_count?) (set! counter 0))
+      (else (begin (set! counter (+ counter 1))
+            (f flag) ) )
+      )
+    )
+  mf
+)
+

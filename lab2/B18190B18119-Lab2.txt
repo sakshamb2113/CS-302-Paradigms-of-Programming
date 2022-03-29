@@ -1,0 +1,60 @@
+(define zero (lambda () '()))
+(define (succ x) (lambda () x))
+(define (pred x) (x))
+
+(define one (succ zero))
+(define two (succ one))
+(define three (succ two))
+(define four (succ three))
+(define five (succ four))
+(define (is-zero? x) (null? (x)))
+
+
+(define (is-equal? x y)
+(cond ((is-zero? x) (is-zero? y))
+((is-zero? y) (is-zero? x))
+(else (is-equal? (pred x) (pred y)))))
+;I1
+(is-equal? zero one)
+;I2
+(is-equal? zero zero)
+;I3
+(is-equal? four (succ(succ( succ(succ zero)))))
+;I4
+(is-equal? two (pred(succ two)))
+
+(define (add-church x y)
+(if (is-zero? y)
+    x
+    (add-church (succ x) (pred y))))
+
+;I5
+(is-equal? four (add-church two two))
+;I6
+(is-equal? one (add-church two two))
+
+(define (subtract-church x y)
+  (if (is-zero? y)
+      x
+      (subtract-church (pred x) (pred y))))
+
+;I7
+(is-equal? zero (subtract-church two two))
+;I8
+(is-equal? one (subtract-church three two))
+;I9
+(is-equal? three (subtract-church three two))
+
+(define (multiply-church x y)
+   (multiply x y zero))
+(define (multiply x y ans)
+       (if (is-zero? y)
+           ans
+           (multiply x (pred y) (add-church ans x))))
+           
+;I10
+(is-equal? four (multiply-church two two))
+;I11
+(is-equal? four (multiply-church zero zero))
+;I12
+(is-equal? zero (multiply-church zero zero))

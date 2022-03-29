@@ -1,0 +1,161 @@
+#lang sicp
+(define-syntax delay
+  (syntax-rules ()
+    ((delay expr) (lambda () expr))))
+
+(define-syntax cons-stream
+  (syntax-rules ()
+    ((cons-stream a b) (cons a (delay b)))))
+
+(define (stream-car s)
+  (car s))
+
+(define (force promise) (promise))
+
+(define (stream-cdr s) (force (cdr s)))
+
+(define the-empty-stream '())
+
+(define (stream-null? s) (eq? s the-empty-stream))
+
+(define (stream-map proc s)
+  (if (stream-null? s)
+      the-empty-stream
+      (cons-stream (proc (stream-car s))
+                         (stream-map proc (stream-cdr s)))))
+
+(define (stream-filter pred s)
+  (cond ((stream-null? s) the-empty-stream)
+        ((pred (stream-car s))
+         (cons-stream (stream-car s)
+                      (stream-filter pred (stream-cdr s))))
+        (else (stream-filter pred (stream-cdr s)))))
+
+(define (stream-enumerate-interval low high)
+  (if (> low high)
+      the-empty-stream
+      (cons-stream low
+                   (stream-enumerate-interval (+ low 1) high))))
+
+(define (enumerate-interval low high)
+  (if (> low high)
+    nil
+    (cons low (enumerate-interval (+ low 1) high))))
+
+(define (map f l)
+  (if (null? l)
+    nil
+    (cons (f (car l))
+          (map f (cdr l)))))
+
+(define (filter pred l)
+  (cond ((null? l) nil)
+        ((pred (car l)) (cons (car l) (filter pred (cdr l))))
+        (else (filter pred (cdr l)))))
+
+(define (accumulate op v l)
+  (if (null? l)
+    v
+    (op (car l)
+        (accumulate op v (cdr l)))))
+
+;(stream-car (stream-cdr
+ ;             (stream-filter
+  ;              prime?
+   ;               (stream-enumerate-interval 10000 1000000))))
+
+;;Q1
+(define (memo-proc proc)
+  (let ((already-run? false) (result false))
+    (lambda ()
+      (if (not already-run?)
+          (begin (set! result (proc))
+                 (set! already-run? true)
+                 result)
+          result)
+      )
+    )
+  )
+;(define delay
+;  (lambda (proc)
+;    (memo-proc (lambda () proc))
+;    )
+;  )
+
+;;Q2
+(define (integers-starting-from n)
+  (cons-stream n (integers-starting-from (+ n 1))))
+
+(define integers (integers-starting-from 1))
+
+(define (divisible? x y)
+  (= (remainder x y) 0))
+(define no-sevens
+  (stream-filter (lambda (x) (not (divisible? x 7)))
+                 integers))
+
+
+;(define empty-stream? null?)
+;(define tail cdr)
+;(define head car)
+;(define cons-stream cons)
+;(define (partial-sums s)
+;  (let loop ((current 0) (s s))
+;    (if (empty-stream? s) '()
+;        (let ((v (+ current (head s))))
+;          (cons-stream v (loop v (tail s)))))))
+
+;(partial-sums '(1 2 3 4 5 6 7 8 9))
+
+;(stream-cdr (partial-sums '(1 2 3 4 5 6 7 8 9)))
+;(stream-cdr (stream-cdr (partial-sums '(1 2 3 4 5 6 7 8 9))))
+
+(define (partial-sumstemp S sum)
+  (cons-stream (+ sum (stream-car S)) (partial-sumstemp (stream-cdr S) (+ sum (stream-car S))))
+  )
+
+(define (partial-sums S)
+  (partial-sumstemp S 0))
+
+(stream-car (partial-sums integers))
+(stream-car (stream-cdr (partial-sums integers)))
+(stream-car (stream-cdr (stream-cdr (partial-sums integers))))
+(stream-car (stream-cdr (stream-cdr (stream-cdr (partial-sums integers)))))
+
+;(partial-sums integers)
+;(stream-cdr (partial-sums integers))
+;(stream-cdr (stream-cdr (partial-sums integers)))
+
+
+
+;;Q3
+;void sieve(){
+;    bool prime[n + 1];
+;    memset(prime, true, sizeof(prime));
+ 
+;    for(int p=2;p*p<=n;p++)
+;    {
+;        if(prime[p]==true)
+;        {
+;            for(int i=p*p;i<=n;i+=p)
+;                prime[i]=false;
+;        }
+;    }
+ 
+;    // Print all prime numbers
+;    for (int p=2;p<=n;p++)
+;        if (prime[p])
+;            cout << p << " ";
+;}
+
+(define (sieve s)
+  (cons-stream
+    (stream-car s)
+    (sieve (stream-filter
+             (lambda (x) (not (divisible? x (stream-car s))))
+           (stream-cdr s)))))
+(define primes (sieve (integers-starting-from 2)))
+
+
+;; as explained in the class stream based implementation of sieve works on the basis of promise. Let us say we have to compute the 2nd prime number. In stream
+;; based implementation whole sieve is not evaluated before whereas in c++ implementation whole sieve has to be evaluated before we determine the primes.

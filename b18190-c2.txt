@@ -1,0 +1,45 @@
+CS-302
+=======
+Comprehension-2
+================
+                - Saksham Barara, B18190
+
+Functional Programming and why its so useful
+============================================
+Let's say we have an application which consists of modules. We are not impressed with this and want to improve it.
+We want to rebuild some modules but don't want to write the whole code completely. We wish to simply use the modules
+that we desire and plug some new modules. Regular programming is messy and it becomes very diffcult for the programmer
+to accomplish the above. Using functional programming can solve our problem.
+
+What is functional programming?
+=================================
+Functional programming is a paradigm of programming. It borrows the idea of using functions for every computation
+from maths and embodies this as a style of programming. 
+
+No side-effects
+==================
+Functional programming provides some interesting features- one of them being the absence of side effects.
+What are side effects ? While programming using other styles we may observe that we often end up modifying our data.
+Sometimes we want to do this and sometimes we don't. In case of large codes and undesired changes to the data, it may
+become difficult to track where we changed the data. These changes can be called as side effects.
+    
+    To solve the problem posed by side effects we may use functional programming. This way of programming focuses 
+on simply looking at input and producing output. No data or file is changed. This also requires our source data to remain 
+immutable.
+
+How to "make" data mutable ?
+===========================
+    Sometimes it is required to make some changes to the source data. For this there is container for a mutable statement
+called "atom". This atom acts as a bridge between functional and other paradigms. The atom holds some data inside it. 
+When a function is applied to the data, the value of the atom becomes the value returned by the function. 
+
+Threads !
+==========
+One more interesting benefit of using functional programming arises from the fact that the data is immutable. Since the 
+data cannot be changed threads can run freely. There can't be bad reads or writes. The problem of concurrency control is 
+dealt with.
+
+Wrapping up
+=============
+Functional programming provides some interesting benefits. The code is easier to understand and provides some performance 
+advantages.

@@ -1,0 +1,20 @@
+#lang sicp
+
+#lang sicp
+(define (make-account balance password)
+  (lambda(pass mess)
+    (if (eq? pass password)
+    (cond((eq? mess 'withdraw)
+          (lambda(amount)
+            (if  (>= balance amount)
+                 (begin (set! balance (- balance amount)) balance)
+                 "Insufficient Balance!")))
+         ((eq? mess 'deposit)
+         (lambda(amount)
+           (set! balance (+ balance amount)) balance))
+          (else (error "Invalid Request"  
+                       ))) 
+    (error "Invalid pass"  
+                       ))))
+
+(define acc2 (make-account 100 'secret-password))

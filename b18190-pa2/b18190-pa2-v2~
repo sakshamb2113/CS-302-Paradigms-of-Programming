@@ -1,0 +1,163 @@
+;====================DIFFERENT APPROACH======================================
+#lang sicp
+(define-syntax delay
+  (syntax-rules ()
+    ((delay expr) (lambda () expr))))
+
+(define-syntax cons-stream
+  (syntax-rules ()
+    ((cons-stream a b) (cons a (delay b)))))
+
+(define (stream-car s)
+  (car s))
+
+(define (force promise) (promise))
+
+(define (stream-cdr s) (force (cdr s)))
+
+(define the-empty-stream '())
+
+(define (stream-null? s) (eq? s the-empty-stream))
+
+(define (stream-map proc s)
+  (if (stream-null? s)
+      the-empty-stream
+      (cons-stream (proc (stream-car s))
+                         (stream-map proc (stream-cdr s)))))
+
+(define (stream-filter pred s)
+  (cond ((stream-null? s) the-empty-stream)
+        ((pred (stream-car s))
+         (cons-stream (stream-car s)
+                      (stream-filter pred (stream-cdr s))))
+        (else (stream-filter pred (stream-cdr s)))))
+
+(define (enumerate-interval low high)
+  (if (> low high)
+      'nil
+      (cons low (enumerate-interval (+ low 1) high))))
+
+(define (stream-enumerate-interval low high)
+  (if (> low high)
+      the-empty-stream
+      (cons-stream low
+                   (stream-enumerate-interval (+ low 1) high))))
+
+(define (square x) (* x x))
+
+(define (integers-starting-from n)
+  (cons-stream n (integers-starting-from (+ n 1))))
+(define integers (integers-starting-from 1))
+
+(define (divisible? x y) (= (remainder x y) 0))
+
+(define nds
+  (stream-filter
+    (lambda (x) (not (divisible? x 7)))
+    integers))
+
+(define (stream-ref s n)
+  (if (= n 0)
+      (stream-car s)
+      (stream-ref (stream-cdr s) (- n 1))))
+
+(define (fibgen a b)
+  (cons-stream a (fibgen b (+ a b))))
+(define fibs (fibgen 0 1))
+
+(define (sieve s)
+  (cons-stream
+    (stream-car s)
+    (sieve (stream-filter
+             (lambda (x) (not (divisible? x (stream-car s))))
+           (stream-cdr s)))))
+
+;================================================================================
+
+(define Fu the-empty-stream)
+(define Pooh the-empty-stream)
+;;question- does it need player_strat1 or 2 or Fu or Pooh as other player (we want Fu or Pooh)
+(define (player_strat1 other_player round)
+  (cons-stream (stream-ref other_player (- round 1)) (player_strat1 other_player (+ round 1)))
+ )
+
+;;define antagonist
+(define (player_strat2 other_player round)
+  
+  (cons-stream (antagonist (most-frequent other_player player_strat2 round)) (player_strat2 other_player (+ round 1)))
+   )
+  
+
+;;most frequent should give index now;;; cant give round as such need to iterate from 0 to round
+(define (most-frequent other_player this_player round)
+  (define l '(0 0 0 0))
+   (define curr-round 0)
+  (define (fill-list round)
+  
+    (if (eq? round 0) 0
+    ((cond ((eq? (stream-car (other_player this_player round)) 1) (+ (car l) 1))
+          ((eq? (stream-car (other_player this_player round)) 2) (+ (cadr l) 1))
+          ((eq? (stream-car (other_player this_player round)) 3) (+ (caddr l) 1))
+          ((eq? (stream-car (other_player this_player round)) 4) (+ (cadddr l) 1))
+          )
+    (fill-list (- round 1))
+    ))
+   )
+  
+  (define idx 0)
+   (define (get-max l)
+     (if (null? (cdr l))
+         (car l)
+         (if (> (car l) (get-max (cdr l)))
+             (car l)
+             (get-max (cdr l ))
+             )
+         )
+     )
+  ;; index working doubtful
+  (define (get-index curr-max l idx)
+    (if (null? (cdr l))
+        (if (eq? (car l) curr-max)
+            4
+            0)
+            (if (eq? (get-index curr-max (cdr l) (+ idx 1)) 0)
+                (if (eq? (car l) curr-max)
+                    idx
+                    0)
+                (get-index curr-max (cdr l) (+ idx 1))
+                )
+            )        
+         )
+  (fill-list round)
+  (get-index (get-max l) l 1)
+ )
+
+;;elf:1 orc:2 dwarf:3 hobbit:4
+;; 
+(define (antagonist x)
+  (cond ((eq? x 4) 2)
+        ((eq? x 3) 4)
+        ((eq? x 1) 3)
+        ((eq? x 2) 1)
+        ((eq? x 2) 3)
+        ((eq? x 1) 4)
+  )
+)
+  ;; need to put the base cases somehow
+(define (play strategy1 strategy2 first_move no_of_rounds)
+  (cond ((eq? strategy1 1) (set! Fu (cons-stream first_move (player_strat1 Pooh 1))))
+        ((eq? strategy1 2) (set! Fu (cons-stream first_move (player_strat2 Pooh 1))))
+        ((eq? strategy2 1) (set! Pooh (cons-stream 4 (player_strat1 Fu 1))))
+        ((eq? strategy2 2) (set! Pooh (cons-stream 4 (player_strat2 Fu 1))))
+        
+  )
+  (set! Fu (cons-stream first_move (player_strat1 Pooh 1)))
+  (set! Pooh (cons-stream 4 (player_strat1 Fu 1)))
+  
+  ;(stream-car Fu)
+  ;(stream-car Pooh)
+  ;(stream-car (stream-cdr Fu))
+  ;(stream-car (stream-cdr Pooh))
+ )
+
+(play 2 1 3 10)

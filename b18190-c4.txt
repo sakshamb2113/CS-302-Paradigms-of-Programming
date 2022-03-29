@@ -1,0 +1,52 @@
+CS-302
+=======
+Comprehension C4
+=================
+                        -Saksham Barara, B18190
+
+Summary
+========
+========
+John Hughes talks about the need for functional programming and the advantages it offers as compared to other styles. 
+
+Church's encoding
+==================
+In the 1940s, Church devised a way of using functions to represent everything. He argued that almost everything-integers, booleans etc. could be defined through functions entirely.
+
+John Backus's paper
+====================
+In his turing award lecture, John Backus described the need for Function programming. He described the conventional programming languages to be growing more enormous but not stronger.
+He described the lack of scope of parallel processing in these languages as they had be read one word-at-a-time. These languages also couldn't use powerful combining forms effectively.
+There was also a lack of useful mathematical properties which could be used in these languages(For eg-composition of functions).
+
+Peter Henderson
+=================
+Peter Henderson was influenced by abstract art consisting of patterns. To build similar art, he deviced the a form of functional geometry. He could construct an abtract image with a
+ plotter by resizing smaller images and attaching them together to form bigger images.
+
+He defined the picture to be a function.
+This function could take 3 arguments that specified the picture's position and its orientation.
+This made it really easy to plot the pictures in different ways. Two images could be merged with just using the union operation with the functions. Images could be rotated by
+ changing the arguments.
+
+Haskel vs Ada vs C++ vs Awk ...
+==================================
+This was the name of a paper by Paul Hudak and Mark P. Jones in 1994. To solve a problem involving 2D geometry, various laguages were used. It was found that Haskell required the
+ least number of lines of code as compared to Ada and C++ by a significant margin.
+
+Lazy evaluations
+===================
+Defering actual computations for later on is possible by the use of functions. This is called Lazy evaluations, when the data is only evaluated when it is requested. This technique has 
+many uses (For eg- creating streams, getting precise estimates on derivatives,etc).
+
+Why functional programming matters?(by John Backus, 1990)
+==========================================
+The paper talks about modelling problems as the producer consumer problem and using lazy evaluations. In place of the producer we can have a search space and in place of consumer we
+ can have a search strategy. John Hughes has implemented many things using this heuristic like simultation of a game, design of a pretty printing library, etc.
+
+Quickcheck
+===========
+This is a tool designed by John Hughes and another person which helps in testing Haskell programs. He emphasises that even this software uses the same producer-consumer strategy. Here
+ we have the space of all possible tests as our search space and a search strategy for Quickcheck. 
+
+Lastly Hughes talks about some languages designed on the basis of functional programming like muFP and FL which helped in designing VLSI systems.
